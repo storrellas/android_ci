@@ -70,22 +70,42 @@ def provision(c):
     print_init_banner("Installing Dependencies ... ")
     c.run('sudo apt update', echo=True)
 
-    # Install docker.io
-    c.run('sudo apt -y install docker.io nginx software-properties-common mysql-client nodejs npm', echo=True)
-    c.run('docker --version')
+    # Install former
+    c.run('sudo apt-get remove docker docker-engine docker.io containerd runc', echo=True)
+
+
+    # Install dependencies
+    c.run('sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common', echo=True)
+
+    # Add GPG key
+    c.run('sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -', echo=True)
+
+
+    # Verify
+    output = c.run('sudo apt-key fingerprint 0EBFCD88', echo=True)
+    if len(output.stdout) <= 0:
+        raise Exception("Verification failed")
+    
+    # Add repository
+    c.run('sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"', echo=True)
+
+    # Install docker
+    c.run('sudo apt update', echo=True)
+    c.run('sudo apt-get -y install docker-ce docker-ce-cli containerd.io', echo=True)
+    c.run('docker --version', echo=True)
 
     # Install docker-compose
     c.run('sudo curl -L \
-            \"https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)\" \
+            \"https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)\" \
             -o /usr/local/bin/docker-compose', echo=True)
     c.run('sudo chmod +x /usr/local/bin/docker-compose', echo=True)
     c.run('docker-compose --version', echo=True)
 
-    # Install certbot
-    c.run('sudo add-apt-repository universe', echo=True)
-    c.run('sudo add-apt-repository ppa:certbot/certbot', echo=True)
-    c.run('sudo apt update', echo=True)
-    c.run('sudo apt install -y certbot', echo=True)
+    # # Install certbot
+    # c.run('sudo add-apt-repository universe', echo=True)
+    # c.run('sudo add-apt-repository ppa:certbot/certbot', echo=True)
+    # c.run('sudo apt update', echo=True)
+    # c.run('sudo apt install -y certbot', echo=True)
 
     print_end_banner()
 
