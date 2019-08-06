@@ -12,5 +12,5 @@ RUN cat /etc/apt/apt.conf.d/proxy_https
 
 RUN env
 RUN ls -la
-#RUN apt-get update
+RUN apt-get update
 #RUN apt-get install nano dnsutils -y
