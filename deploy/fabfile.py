@@ -164,6 +164,9 @@ def docker_proxy(c):
 
 @task(hosts=my_hosts)
 def gradleBuild(c):
+    """
+    Builds gradle image
+    """
 
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
     with c.cd(config['remote_workspace']):
@@ -188,6 +191,27 @@ def gradleBuild(c):
             c.run('sudo docker-compose stop', echo=True)
             c.run('sudo docker-compose build', echo=True)
         print_end_banner()
+
+
+@task(hosts=my_hosts)
+def gradleRun(c):
+    """
+    Run gradle image
+    """
+
+    command="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
+
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    with c.cd(config['remote_workspace']):
+   
+        # Generate docker image
+        print_init_banner('Docker image ... ')
+        with c.cd(repo_ci_folder + '/' + docker_folder):
+            c.run('sudo docker-compose run ' + command, echo=True)
+        print_end_banner()
+
+
+
 
 @task(hosts=my_hosts)
 def deploy(c):
