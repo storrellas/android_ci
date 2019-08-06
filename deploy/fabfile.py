@@ -16,7 +16,7 @@ my_hosts = [aws]
 
 # Create logger
 logger = utils.get_logger()
-
+docker_folder = './docker'
 
 def print_init_banner(message):
     logger.info("++++++++++++++++++++++++++++++")
@@ -62,6 +62,7 @@ def test(c):
 def provision(c):
     """
     Installs Dependencies
+    See: https://docs.docker.com/install/linux/docker-ce/ubuntu/
     """
     print_init_banner('provision: Installs dependencies')
     print_end_banner()
@@ -143,6 +144,48 @@ def gitSSH(c):
 
 
 @task(hosts=my_hosts)
+def gradle(c):
+    """
+    Pull and build gradle
+    See: https://docs.docker.com/config/daemon/systemd/
+    """
+    # Configure SystemD
+    c.run('sudo mkdir -p /etc/systemd/system/docker.service.d', echo=True)
+    c.put('./http-proxy.conf')
+    c.run('sudo mv http-proxy.conf /etc/systemd/system/docker.service.d', echo=True)
+
+    # Restart
+    c.run('sudo systemctl daemon-reload', echo=True)
+    c.run('sudo systemctl restart docker', echo=True)
+    c.run('sudo systemctl show --property=Environment docker', echo=True)
+
+    # Pull image
+    #c.run('sudo docker pull gradle:latest', echo=True)
+
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    with c.cd(config['remote_workspace']):
+
+        # Get latest changes
+        print_init_banner('Git pull ... ')          
+        with c.cd(repo_ci_folder):
+            # Get specific branch
+            if  config['branch'] is not None:
+                c.run('git fetch --all ', echo=True, pty=True)
+                c.run('git checkout ' + config['branch'], echo=True, pty=True)
+                c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
+            else:
+                c.run('git pull origin master', echo=True, pty=True)
+
+        print_end_banner()
+    
+        # Generate docker image
+        print_init_banner('Docker image ... ')
+        with c.cd(repo_ci_folder + '/' + docker_folder):
+            c.run('sudo docker-compose stop', echo=True)
+            c.run('sudo docker-compose build', echo=True)
+        print_end_banner()
+
+@task(hosts=my_hosts)
 def deploy(c):
     """
     Clones, Pull and Gradle
@@ -152,7 +195,6 @@ def deploy(c):
 
     # Get repo folder from URL
     repo_folder = get_repo_folder(config['repository'])
-    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
 
     # Print public key value
     print_init_banner('Using public RSA key')
@@ -197,23 +239,9 @@ def deploy(c):
                 c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
             else:
                 c.run('git pull origin master', echo=True, pty=True)
-            
-        with c.cd(repo_ci_folder):
-            # Get specific branch
-            if  config['branch'] is not None:
-                c.run('git fetch --all ', echo=True, pty=True)
-                c.run('git checkout ' + config['branch'], echo=True, pty=True)
-                c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
-            else:
-                c.run('git pull origin master', echo=True, pty=True)
-        print_end_banner()
 
-@task(hosts=my_hosts)
-def gradle(c):
-    """
-    Pull and build gradle
-    """
-    c.run('sudo docker pull gradle:latest', echo=True, pty=True)
+
+
 
 
 @task(hosts=my_hosts)
