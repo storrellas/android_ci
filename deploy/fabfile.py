@@ -144,7 +144,7 @@ def gitSSH(c):
 
 
 @task(hosts=my_hosts)
-def gradle(c):
+def docker_proxy(c):
     """
     Pull and build gradle
     See: https://docs.docker.com/config/daemon/systemd/
@@ -162,6 +162,9 @@ def gradle(c):
     # Pull image
     #c.run('sudo docker pull gradle:latest', echo=True)
 
+@task(hosts=my_hosts)
+def gradleBuild(c):
+
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
     with c.cd(config['remote_workspace']):
 
@@ -175,7 +178,8 @@ def gradle(c):
                 c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
             else:
                 c.run('git pull origin master', echo=True, pty=True)
-
+            if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
+                c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
         print_end_banner()
     
         # Generate docker image
@@ -220,12 +224,6 @@ def deploy(c):
             logger.info('Repository exists skipping')
         print_end_banner()
 
-        print_init_banner('Cloning ci repository ... ')
-        if c.run('test -d {}'.format(repo_ci_folder), warn=True).failed:
-            c.run('git clone ' + config['repository_android_ci'], echo=True, pty=True)
-        else:
-            logger.info('Repository exists skipping')
-        print_end_banner()
 
     with c.cd(config['remote_workspace']):
 
