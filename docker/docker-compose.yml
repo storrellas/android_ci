@@ -26,4 +26,6 @@ services:
       dockerfile: docker/Dockerfile
       args:
         - HTTP_PROXY="http://barc.proxy.corp.sopra:8080"
+      volumes:
+       - ${TARGET_PATH}:/home/gradle/project/
 
