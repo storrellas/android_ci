@@ -207,7 +207,7 @@ def gradleRun(c):
         # Generate docker image
         print_init_banner('Docker image ... ')
         with c.cd(repo_ci_folder + '/' + docker_folder):
-            c.run('sudo docker-compose run android_ci ' + command, echo=True)
+            c.run('sudo docker-compose run gradle_sopra ' + command, echo=True)
         print_end_banner()
 
 
