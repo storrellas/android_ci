@@ -101,12 +101,6 @@ def provision(c):
     c.run('sudo chmod +x /usr/local/bin/docker-compose', echo=True)
     c.run('docker-compose --version', echo=True)
 
-    # # Install certbot
-    # c.run('sudo add-apt-repository universe', echo=True)
-    # c.run('sudo add-apt-repository ppa:certbot/certbot', echo=True)
-    # c.run('sudo apt update', echo=True)
-    # c.run('sudo apt install -y certbot', echo=True)
-
     print_end_banner()
 
 @task(hosts=my_hosts)
@@ -147,86 +141,18 @@ def gitSSH(c):
     c.run('sudo chmod 600 ./.ssh/id_rsa.pub')
     print_end_banner()
 
-@task(hosts=my_hosts)
-def nginxSelfsigned(c):
-    """
-    Generates SSH keys selfsigned, creates NGINX configuration and restart
-    """
-    print_init_banner('NGINX - selfsigned: Generates selfsigned certs and configures NGINX')
-    print_end_banner()
-
-    # Upload keys
-    print_init_banner("Configure NGINX ...")
-
-    nginx_conf_name = 'nginx_conf'
-    nginx_conf_path = './' + nginx_conf_name
-    c.run('mkdir ' + nginx_conf_name, warn=True)
-    with c.cd(nginx_conf_path):
-        # Create selfsigned certificate
-        c.run('openssl genrsa -out selfsigned.key 2048')
-        c.run('openssl req -new -x509 -key selfsigned.key -out selfsigned.cert -days 3650 -subj /CN=www.example.com')
-
-        # Generate configuration
-        c.put('./stem_ui', remote=nginx_conf_path)
-        c.run('sed -i "s/{{ssl_cert}}/\/etc\/nginx\/selfsigned.cert/g" stem_ui', echo=True)
-        c.run('sed -i "s/{{ssl_key}}/\/etc\/nginx\/selfsigned.key/g" stem_ui', echo=True)
-        c.run('sed -i "s/{{domain}}/' + config['app_domain'] + '/g" stem_ui', echo=True)
-
-        # Set configuration
-        c.run('sudo cp -rv ./stem_ui /etc/nginx/sites-available/', echo=True)
-        c.run('sudo ln -s /etc/nginx/sites-available/stem_ui /etc/nginx/sites-enabled/stem_ui', echo=True, warn=True)
-
-    print_end_banner()
-
-    print_init_banner("Restart NGINX ...")
-    c.run('sudo /etc/init.d/nginx restart', echo=True)
-    print_end_banner()
-
-@task(hosts=my_hosts)
-def nginxLetsencrypt(c):
-    """
-    Configure lest encrypt and update NGINX
-    """
-    #logger.error("This needs to be completed")
-    print_init_banner('NGINX - LetsEncrypt: Requires certs and configures NGINX')
-    print_end_banner()
-
-    print_init_banner("Getting lets entcrypt certificates ...")
-    nginx_conf_name = 'nginx_conf'
-    nginx_conf_path = './' + nginx_conf_name
-    c.run('mkdir ' + nginx_conf_name, warn=True)
-    with c.cd(nginx_conf_path):
-        # Create LetsEncrypt certificate
-        c.run('sudo /etc/init.d/nginx stop', echo=True)
-        c.run('sudo certbot certonly --standalone -d ' + config['app_domain'] + ' --manual-public-ip-logging-ok --force-renewal', echo=True, warn=True)
-
-        # Generate configuration
-        c.put('./stem_ui', remote=nginx_conf_path)
-        c.run('sed -i "s/{{ssl_cert}}/\/etc\/letsencrypt\/live\/' + config['app_domain'] +  '\/fullchain.pem/g" stem_ui', echo=True)
-        c.run('sed -i "s/{{ssl_key}}/\/etc\/letsencrypt\/live\/' + config['app_domain'] + '\/privkey.pem/g" stem_ui', echo=True)
-        c.run('sed -i "s/{{domain}}/' + config['app_domain'] + '/g" stem_ui', echo=True)
-
-        # Set configuration
-        c.run('sudo cp -rv ./stem_ui /etc/nginx/sites-available/' + config['app_domain'], echo=True)        
-        c.run('sudo ln -s /etc/nginx/sites-available/' + config['app_domain'] + ' /etc/nginx/sites-enabled/' + config['app_domain'], echo=True, warn=True)
-
-
-    print_end_banner()
-
-    print_init_banner("Restart NGINX ...")
-    c.run('sudo /etc/init.d/nginx restart', echo=True)
-    print_end_banner()
 
 @task(hosts=my_hosts)
 def deploy(c):
     """
-    Clones, Pull and launches docker-compose build
+    Clones, Pull and Gradle
     """
     print_init_banner('Deploy: Clones, Pull and launches docker-compose build')
     print_end_banner()
 
     # Get repo folder from URL
     repo_folder = get_repo_folder(config['repository'])
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
 
     # Print public key value
     print_init_banner('Using public RSA key')
@@ -245,19 +171,19 @@ def deploy(c):
     with c.cd(config['remote_workspace']):
 
         # Cloning repository
-        print_init_banner('Cloning repository ... ')
+        print_init_banner('Cloning project repository ... ')
         if c.run('test -d {}'.format(repo_folder), warn=True).failed:
             c.run('git clone ' + config['repository'], echo=True, pty=True)
         else:
             logger.info('Repository exists skipping')
         print_end_banner()
 
-    # Compress Build and Send to Remote
-    print_init_banner('Compressing build and send to remote ... ')
-    c.local('cd .. && tar -pcvzf build.tar.gz ./build', echo=True)
-    c.put('../build.tar.gz', remote=config['remote_workspace'] + '/' + repo_folder)
-    c.local('rm ../build.tar.gz')
-    print_end_banner()
+        print_init_banner('Cloning ci repository ... ')
+        if c.run('test -d {}'.format(repo_ci_folder), warn=True).failed:
+            c.run('git clone ' + config['repository_android_ci'], echo=True, pty=True)
+        else:
+            logger.info('Repository exists skipping')
+        print_end_banner()
 
     with c.cd(config['remote_workspace']):
 
@@ -271,25 +197,24 @@ def deploy(c):
                 c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
             else:
                 c.run('git pull origin master', echo=True, pty=True)
-
-            if c.run('test -f {}'.format('./docker/.env'), warn=True).failed:
-                c.run('cp -rv ./docker/.env.template ./docker/.env', echo=True)
+            
+        with c.cd(repo_ci_folder):
+            # Get specific branch
+            if  config['branch'] is not None:
+                c.run('git fetch --all ', echo=True, pty=True)
+                c.run('git checkout ' + config['branch'], echo=True, pty=True)
+                c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
+            else:
+                c.run('git pull origin master', echo=True, pty=True)
         print_end_banner()
 
-        # Upload build in remote
-        print_init_banner('Uploading build ... ')
-        with c.cd(repo_folder):
-            # Upload build
-            c.run('tar xzvf build.tar.gz .')
-            c.run('rm build.tar.gz', echo=True)
-        print_end_banner()
+@task(hosts=my_hosts)
+def gradle(c):
+    """
+    Pull and build gradle
+    """
+    c.run('sudo docker pull gradle:latest', echo=True, pty=True)
 
-        # Generate docker image
-        print_init_banner('Docker image ... ')
-        with c.cd(repo_folder + '/docker'):
-            c.run('sudo docker-compose stop', echo=True)
-            c.run('sudo docker-compose build', echo=True)
-        print_end_banner()
 
 @task(hosts=my_hosts)
 def build(c):

@@ -1,11 +1,8 @@
 {
    "remote_workspace":"./workspace",
-   "repository": "git@bitbucket.org:trynewsport/tryasport_ui.git",
+   "repository": "git@innersource.soprasteria.com:digitalfactory/nestle/we_are_nutrition-android.git",
+   "repository_android_ci": "git@innersource.soprasteria.com:torrellas/android_ci.git",
    "branch": "master",
-   "godaddy_key": "godaddy_key",
-   "godaddy_secret": "godaddy_password",
-   "domain": "tryasport.com",
-   "app_domain": "www.tryasport.com",
-   "git_key_public": "/home/vagrant/.ssh/storrellas.pub",
-   "git_key_private": "/home/vagrant/.ssh/storrellas"
+   "git_key_public": "/home/vagrant/.ssh/id_rsa.pub",
+   "git_key_private": "/home/vagrant/.ssh/id_rsa"
 }
