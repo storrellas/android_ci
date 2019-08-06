@@ -1,0 +1,11 @@
+{
+   "remote_workspace":"./workspace",
+   "repository": "git@bitbucket.org:trynewsport/tryasport_ui.git",
+   "branch": "master",
+   "godaddy_key": "godaddy_key",
+   "godaddy_secret": "godaddy_password",
+   "domain": "tryasport.com",
+   "app_domain": "www.tryasport.com",
+   "git_key_public": "/home/vagrant/.ssh/storrellas.pub",
+   "git_key_private": "/home/vagrant/.ssh/storrellas"
+}
