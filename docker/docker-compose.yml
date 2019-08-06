@@ -24,4 +24,6 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+      args:
+        - HTTP_PROXY=${http://barc.proxy.corp.sopra:8080}
 
