@@ -17,8 +17,8 @@
 
 version: "3"
 services:
-  gradle_sopra:
-    image: gradle_sopra
+  android_ci:
+    image: android_ci
     restart: always
     tty: true
     build:
