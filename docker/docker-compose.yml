@@ -29,5 +29,5 @@ services:
     volumes:
       - ${TARGET_PATH}:/home/gradle/project/
     extra_hosts:
-      nexus.nespresso.com: 192.168.216.107
+      - "nexus.nespresso.com:192.168.216.107"
 
