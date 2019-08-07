@@ -95,6 +95,15 @@ def provision(c):
     c.run('sudo apt-get -y install docker-ce docker-ce-cli containerd.io', echo=True)
     c.run('docker --version', echo=True)
 
+    # Configure serviced to use docker behind proxy
+    c.run('sudo mkdir -p /etc/systemd/system/docker.service.d', echo=True)
+    c.put('./http-proxy.conf')
+    c.run('sudo mv http-proxy.conf /etc/systemd/system/docker.service.d', echo=True)
+
+    c.run('sudo systemctl daemon-reload', echo=True)
+    c.run('sudo systemctl restart docker', echo=True)
+    c.run('sudo systemctl show --property=Environment docker', echo=True)
+
     # Install docker-compose
     c.run('sudo curl -L \
             \"https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)\" \
@@ -141,78 +150,6 @@ def gitSSH(c):
     c.run('sudo chmod 600 ./.ssh/id_rsa')
     c.run('sudo chmod 600 ./.ssh/id_rsa.pub')
     print_end_banner()
-
-
-@task(hosts=my_hosts)
-def docker_proxy(c):
-    """
-    Pull and build gradle
-    See: https://docs.docker.com/config/daemon/systemd/
-    """
-    # Configure SystemD
-    c.run('sudo mkdir -p /etc/systemd/system/docker.service.d', echo=True)
-    c.put('./http-proxy.conf')
-    c.run('sudo mv http-proxy.conf /etc/systemd/system/docker.service.d', echo=True)
-
-    # Restart
-    c.run('sudo systemctl daemon-reload', echo=True)
-    c.run('sudo systemctl restart docker', echo=True)
-    c.run('sudo systemctl show --property=Environment docker', echo=True)
-
-    # Pull image
-    #c.run('sudo docker pull gradle:latest', echo=True)
-
-@task(hosts=my_hosts)
-def gradleBuild(c):
-    """
-    Builds gradle image
-    """
-
-    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
-    with c.cd(config['remote_workspace']):
-
-        # Get latest changes
-        print_init_banner('Git pull ... ')          
-        with c.cd(repo_ci_folder):
-            # Get specific branch
-            if  config['branch'] is not None:
-                c.run('git fetch --all ', echo=True, pty=True)
-                c.run('git checkout ' + config['branch'], echo=True, pty=True)
-                c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
-            else:
-                c.run('git pull origin master', echo=True, pty=True)
-            if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
-                c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
-        print_end_banner()
-    
-        # Generate docker image
-        print_init_banner('Docker image ... ')
-        with c.cd(repo_ci_folder + '/' + docker_folder):
-            c.run('sudo docker-compose stop', echo=True)
-            c.run('sudo docker-compose build', echo=True)
-        print_end_banner()
-
-
-@task(hosts=my_hosts)
-def gradleRun(c):
-    """
-    Run gradle image
-    """
-
-    #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
-    command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com tasks"
-
-    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
-    with c.cd(config['remote_workspace']):
-   
-        # Generate docker image
-        print_init_banner('Docker image ... ')
-        with c.cd(repo_ci_folder + '/' + docker_folder):
-            c.run('sudo docker-compose run android_ci ' + command, echo=True)
-        print_end_banner()
-
-
-
 
 @task(hosts=my_hosts)
 def deploy(c):
@@ -266,91 +203,61 @@ def deploy(c):
 
 
 
+@task(hosts=my_hosts)
+def deployci(c):
+    """
+    Builds gradle image
+    """
+
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    with c.cd(config['remote_workspace']):
+
+        # Get latest changes
+        print_init_banner('Git pull ... ')          
+        with c.cd(repo_ci_folder):
+            # Get specific branch
+            if  config['branch'] is not None:
+                c.run('git fetch --all ', echo=True, pty=True)
+                c.run('git checkout ' + config['branch'], echo=True, pty=True)
+                c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
+            else:
+                c.run('git pull origin master', echo=True, pty=True)
+            if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
+                c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
+        print_end_banner()
+    
+        # Generate docker image
+        print_init_banner('Docker image ... ')
+        with c.cd(repo_ci_folder + '/' + docker_folder):
+            c.run('sudo docker-compose stop', echo=True)
+            c.run('sudo docker-compose build', echo=True)
+        print_end_banner()
+
 
 @task(hosts=my_hosts)
 def build(c):
     """
-    Builds and puts compiled modules
+    Run gradle image to build image
     """
 
-    # Get repo folder from URL
-    repo_folder = get_repo_folder(config['repository'])
+    # Generate environment
+    with c.cd(config['remote_workspace']):
+        # Get latest changes
+        print_init_banner('Git pull ... ')          
+        with c.cd(repo_ci_folder):
+            c.put('../docker/.env.template', remote=config['remote_workspace'] + repo_ci_folder)
+            c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
+            #c.run('sudo sed "s/.*TEXT_TO_BE_REPLACED.*/This line is removed by the admin./"')
+        print_end_banner()
 
-    # Generating build
-    c.local('cd .. && ./node_modules/.bin/webpack --mode production --config webpack.config.prod.js', echo=True)
+    # #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
+    # command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com tasks"
 
-
-@task(hosts=my_hosts)
-def launch(c):
-    """
-    Relaunches docker
-    """
-    print_init_banner('Relaunches docker')
-    print_end_banner()
-
-    # Get repo folder from URL
-    repo_folder = get_repo_folder(config['repository'])
-
-    print_init_banner('Docker image ... ')
-    with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
-        c.run('sudo docker-compose stop', echo=True)
-        c.run('sudo docker-compose up -d', echo=True)
-
-    print_end_banner()
-
-@task(hosts=my_hosts)
-def halt(c):
-    """
-    halt docker
-    """
-    print_init_banner('Stop docker')
-    print_end_banner()
-
-    # Get repo folder from URL
-    repo_folder = get_repo_folder(config['repository'])
-
-    with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
-        c.run('sudo docker-compose stop', echo=True)
-
-    print_end_banner()
-
-@task(hosts=my_hosts)
-def ddns(c):
-    """
-    Update DNS A record
-    """
-    print_init_banner('Update DNS record in Godaddy')
-    print_end_banner()
-
-    c.put('./godaddy_ddns.py')
-    c.run('python3 godaddy_ddns.py --key ' + config['godaddy_key'] + \
-            ' --secret ' + config['godaddy_secret'] + ' ' + config['godaddy_domain'], echo=True)
-
-    # More complex version
-    # repo_folder = get_repo_folder(config['repository'])
-    # with c.cd(config['remote_workspace'] + '/' + repo_folder + '/deploy/'):
-    #     c.run('python3 godaddy_ddns.py --key ' + config['godaddy_key'] + \
-    #             ' --secret ' + config['godaddy_secret'] + ' ' + config['godaddy_domain'], echo=True)
-
-
-@task(hosts=my_hosts)
-def log(c):
-    """
-    Configure logging
-    """
-
-    # Rsyslog
-    c.put('./rsyslog/60-stem.conf')
-    c.run('sudo mv 60-stem.conf /etc/rsyslog.d/', echo=True)
-    c.run('sudo /etc/init.d/rsyslog restart', echo=True)
-
-    # Logrotate
-    c.put('./rsyslog/stem-logrotate')
-    c.run('sudo mv stem-logrotate /etc/logrotate.d/', echo=True)
-
-
-
-# from fabric import Connection
-# if __name__ == "__main__":
-#     c = Connection(host='ec2-35-178-81-90.eu-west-2.compute.amazonaws.com', user="ubuntu", connect_kwargs={"key_filename": "/home/vagrant/.ssh/stem.pem"})
-#     c.run('ls -la')
+    # repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    # with c.cd(config['remote_workspace']):
+   
+    #     # Generate docker image
+    #     print_init_banner('Docker image ... ')
+    #     with c.cd(repo_ci_folder + '/' + docker_folder):
+    #         c.run('sudo docker-compose run android_ci ' + command, echo=True)
+    #     print_end_banner()

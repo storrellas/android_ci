@@ -2,7 +2,7 @@
    "remote_workspace":"./workspace",
    "repository": "git@innersource.soprasteria.com:digitalfactory/nestle/we_are_nutrition-android.git",
    "repository_android_ci": "git@innersource.soprasteria.com:torrellas/android_ci.git",
-   "branch": "master",
+   "branch": "develop",
    "git_key_public": "/home/vagrant/.ssh/id_rsa.pub",
    "git_key_private": "/home/vagrant/.ssh/id_rsa"
 }
