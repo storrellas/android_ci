@@ -212,6 +212,8 @@ def generate_env(c):
     """
     Generate environment file for docker
     """
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+
     c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
     c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
     generate_key_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
