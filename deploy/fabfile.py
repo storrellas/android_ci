@@ -283,7 +283,7 @@ def build(c):
     #         "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
     #         "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
     #         "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
-    # workdir="/home/gradle/project/"
+    workdir="/home/gradle/project/"
 
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
     with c.cd(config['remote_workspace']):
