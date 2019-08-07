@@ -232,7 +232,7 @@ def deployci(c):
             c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
             c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
 
-            c.run('sudo sed -i "s/.*TARGET_PATH.*/TARGET_PATH={}/" ./docker/.env'.format('/home/storrellas/workspace/we_are_nutrition-android'))
+            c.run('sudo sed -i "s/.*TARGET_PATH.*/TARGET_PATH={}/" ./docker/.env'.format('/home/storrellas/workspace/we_are_nutrition-android'), echo=True)
 
 
             c.run('cat ./docker/.env', echo=True)
