@@ -278,7 +278,11 @@ def build(c):
 
     #command="./gradlew tasks --all"
     #command="./gradlew build"
-    command="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com build"
+    command="./gradlew " \
+            "-Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 " \
+            "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
+            "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
+            "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
 
     workdir="/home/gradle/project/"
 
