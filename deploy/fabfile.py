@@ -224,13 +224,18 @@ def deployci(c):
             else:
                 c.run('git pull origin master', echo=True, pty=True)
             #if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
-            c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
+            #c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
+
+            # Upload configuration
+            c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + repo_ci_folder + docker_folder)
+            c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
+
+
         print_end_banner()
     
         # Generate docker image
         print_init_banner('Docker image ... ')
         with c.cd(repo_ci_folder + '/' + docker_folder):
-            c.run('sudo docker-compose stop', echo=True)
             c.run('sudo docker-compose build', echo=True)
         print_end_banner()
 
