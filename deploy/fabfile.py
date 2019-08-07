@@ -231,12 +231,8 @@ def deployci(c):
             # Upload configuration to .env
             c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
             c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
-
-
-            #print('/home/storrellas/workspace/we_are_nutrition-android'.maketrans({'/': '\/'}))
-            # str_escaped = re.escape('/home/storrellas/workspace/we_are_nutrition-android')
-            # c.run('sudo sed -i "s/.*TARGET_PATH.*/TARGET_PATH={}/" ./docker/.env'.format(str_escaped), echo=True)
             generate_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
+            generate_env(c, 'PROXY', 'http://barc.proxy.corp.sopra:8080' )
             c.run('cat ./docker/.env', echo=True)
 
 
