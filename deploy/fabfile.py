@@ -216,8 +216,8 @@ def generate_env(c):
 
     c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
     c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
-    generate_key_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
-    generate_key_env(c, 'HTTP_PROXY', 'http://barc.proxy.corp.sopra:8080' )
+    generate_key_env(c, 'TARGET_PATH', config['target_path'] )
+    generate_key_env(c, 'HTTP_PROXY', config['http_proxy'] )
     c.run('cat ./docker/.env', echo=True)
 
 @task(hosts=my_hosts)
@@ -240,17 +240,9 @@ def deployci(c):
                 c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
             else:
                 c.run('git pull origin master', echo=True, pty=True)
-            #if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
-            #c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
 
             # Upload configuration to .env
-            # c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
-            # c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
-            # generate_key_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
-            # generate_key_env(c, 'HTTP_PROXY', 'http://barc.proxy.corp.sopra:8080' )
-            # c.run('cat ./docker/.env', echo=True)
             generate_env(c)
-
 
         print_end_banner()
     
