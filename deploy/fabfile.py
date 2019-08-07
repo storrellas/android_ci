@@ -233,7 +233,7 @@ def deployci(c):
             c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
 
 
-            print('/home/storrellas/workspace/we_are_nutrition-android'.maketrans({'/', '\/'}))
+            print('/home/storrellas/workspace/we_are_nutrition-android'.maketrans({'/': '\/'}))
             #c.run('sudo sed -i "s/.*TARGET_PATH.*/TARGET_PATH={}/" ./docker/.env'.format('/home/storrellas/workspace/we_are_nutrition-android'), echo=True)
 
 
