@@ -226,11 +226,13 @@ def deployci(c):
             #if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
             #c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
 
-            # Upload configuration
+            # Upload configuration to .env
             print('../{}/.env.template'.format(docker_folder))
             print(config['remote_workspace'] + '/' + repo_ci_folder + docker_folder)
             c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
             c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
+
+            c.run('sudo sed -i "s/.*TARGET_PATH.*/TARGET_PATH=SERGI/" ./docker/.env')
 
 
             c.run('cat ./docker/.env', echo=True)
