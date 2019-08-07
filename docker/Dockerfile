@@ -20,6 +20,9 @@ RUN apt-get install nano dnsutils wget -y
 
 # Get android-sdk
 RUN wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+RUN mkdir android-sdk
+RUN unzip sdk-tools-linux-4333796.zip -d /home/gradle/adroid-sdk/
+WORKDIR /home/gradle/adroid-sdk/
 #use_proxy=yes
 #http_proxy=barc.proxy.corp.sopra:8080
 #https_proxy=barc.proxy.corp.sopra:8080
