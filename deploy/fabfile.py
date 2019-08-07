@@ -227,8 +227,8 @@ def deployci(c):
             #c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
 
             # Upload configuration
-            # print('../{}/.env.template'.format(docker_folder))
-            # print(config['remote_workspace'] + '/' + repo_ci_folder + docker_folder)
+            print('../{}/.env.template'.format(docker_folder))
+            print(config['remote_workspace'] + '/' + repo_ci_folder + docker_folder)
             c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + docker_folder)
             c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
 
