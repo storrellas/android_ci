@@ -216,14 +216,15 @@ def deployci(c):
         print_init_banner('Git pull ... ')          
         with c.cd(repo_ci_folder):
             # Get specific branch
-            if  config['branch'] is not None:
+            #if  config['branch'] is not None:
+            if False:
                 c.run('git fetch --all ', echo=True, pty=True)
                 c.run('git checkout ' + config['branch'], echo=True, pty=True)
                 c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
             else:
                 c.run('git pull origin master', echo=True, pty=True)
-            if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
-                c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
+            #if c.run('test -f {}'.format(docker_folder + '/.env'), warn=True).failed:
+            c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
         print_end_banner()
     
         # Generate docker image
