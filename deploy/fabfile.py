@@ -258,25 +258,35 @@ def build(c):
     """
     Run gradle image to build image
     """
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
 
     # Generate environment
+    print_init_banner('Generate .env ... ')          
+    with c.cd(config['remote_workspace'] + '/' + repo_ci_folder):
+        # Upload configuration to .env
+        generate_env(c) 
+    print_end_banner()
+
+
+    # Launch build
+    #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
+    #command="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com tasks --all"
+
+    #command="ls -la"
+    #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com dependencies"
+    
+
+    #command="./gradlew tasks --all"
+    #command="./gradlew build"
+    command="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com build"
+
+    workdir="/home/gradle/project/"
+
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
     with c.cd(config['remote_workspace']):
-        # Get latest changes
-        print_init_banner('Git pull ... ')          
-        with c.cd(repo_ci_folder):
-            c.put('../docker/.env.template', remote=config['remote_workspace'] + repo_ci_folder)
-            c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
-            #c.run('sudo sed "s/.*TEXT_TO_BE_REPLACED.*/This line is removed by the admin./"')
-        print_end_banner()
-
-    # #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
-    # command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com tasks"
-
-    # repo_ci_folder = get_repo_folder(config['repository_android_ci'])
-    # with c.cd(config['remote_workspace']):
    
-    #     # Generate docker image
-    #     print_init_banner('Docker image ... ')
-    #     with c.cd(repo_ci_folder + '/' + docker_folder):
-    #         c.run('sudo docker-compose run android_ci ' + command, echo=True)
-    #     print_end_banner()
+        # Generate docker image
+        print_init_banner('Docker image ... ')
+        with c.cd(repo_ci_folder + '/' + docker_folder):
+            c.run('sudo docker-compose run -w "{}" android_ci {}'.format(workdir, command), echo=True)
+        print_end_banner()
