@@ -29,7 +29,7 @@ ENV ANDROID_HOME="/home/gradle/android-sdk"
 ENV PATH="${PATH}:${ANDROID_HOME}/tools/bin"
 ENV PATH="${PATH}:${ANDROID_HOME}/platform-tools"
 RUN env
-RUN sdkmanager --list --verbose --no-https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
+RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
 #use_proxy=yes
 #http_proxy=barc.proxy.corp.sopra:8080
 #https_proxy=barc.proxy.corp.sopra:8080
