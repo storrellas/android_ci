@@ -233,7 +233,7 @@ def deployci(c):
             c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
 
 
-            c.run('cat ./docker/.env')
+            c.run('cat ./docker/.env', echo=True)
 
 
         print_end_banner()
