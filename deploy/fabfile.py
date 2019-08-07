@@ -201,9 +201,22 @@ def deploy(c):
                 c.run('git pull origin master', echo=True, pty=True)
 
 
-def generate_env(c, key, value):
+def generate_key_env(c, key, value):
+    """
+    Generates specific key for docker
+    """
     str_escaped = re.escape(value)
     c.run('sudo sed -i "s/.*{}.*/{}={}/" ./docker/.env'.format(key, key, str_escaped), echo=True)
+
+def generate_env(c):
+    """
+    Generate environment file for docker
+    """
+    c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
+    c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
+    generate_key_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
+    generate_key_env(c, 'HTTP_PROXY', 'http://barc.proxy.corp.sopra:8080' )
+    c.run('cat ./docker/.env', echo=True)
 
 @task(hosts=my_hosts)
 def deployci(c):
@@ -229,11 +242,12 @@ def deployci(c):
             #c.run('cp -rv ' + docker_folder + '/.env.template ' + docker_folder + '/.env', echo=True)
 
             # Upload configuration to .env
-            c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
-            c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
-            generate_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
-            generate_env(c, 'HTTP_PROXY', 'http://barc.proxy.corp.sopra:8080' )
-            c.run('cat ./docker/.env', echo=True)
+            # c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
+            # c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
+            # generate_key_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
+            # generate_key_env(c, 'HTTP_PROXY', 'http://barc.proxy.corp.sopra:8080' )
+            # c.run('cat ./docker/.env', echo=True)
+            generate_env(c)
 
 
         print_end_banner()
