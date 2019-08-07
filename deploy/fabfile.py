@@ -234,8 +234,8 @@ def deployci(c):
 
 
             #print('/home/storrellas/workspace/we_are_nutrition-android'.maketrans({'/': '\/'}))
-            print(re.escape('/home/storrellas/workspace/we_are_nutrition-android'))
-            #c.run('sudo sed -i "s/.*TARGET_PATH.*/TARGET_PATH={}/" ./docker/.env'.format('/home/storrellas/workspace/we_are_nutrition-android'), echo=True)
+            str_escaped = re.escape('/home/storrellas/workspace/we_are_nutrition-android')
+            c.run('sudo sed -i "s/.*TARGET_PATH.*/TARGET_PATH={}/" ./docker/.env'.format(str_escaped), echo=True)
 
 
             c.run('cat ./docker/.env', echo=True)
