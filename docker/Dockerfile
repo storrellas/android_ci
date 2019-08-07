@@ -30,7 +30,5 @@ ENV PATH="${PATH}:${ANDROID_HOME}/tools/bin"
 ENV PATH="${PATH}:${ANDROID_HOME}/platform-tools"
 RUN env
 RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
-RUN echo "sergi"
-RUN cat /etc/hosts
 
 
