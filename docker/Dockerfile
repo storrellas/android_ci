@@ -30,5 +30,11 @@ ENV PATH="${PATH}:${ANDROID_HOME}/tools/bin"
 ENV PATH="${PATH}:${ANDROID_HOME}/platform-tools"
 RUN env
 RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
+
+# CONFIGURE android-sdk
+RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platforms;android-28"
+RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platform-tools"
+RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "build-tools;28.0.3"
+
 RUN yes | sdkmanager --licenses
 

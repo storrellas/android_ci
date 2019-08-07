@@ -272,17 +272,17 @@ def build(c):
     #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
     #command="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com tasks --all"
 
-    command="cat /etc/hosts"
+    #command="cat /etc/hosts"
     #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com dependencies"
     
 
     #command="./gradlew tasks --all"
     #command="./gradlew build"
-    # command="./gradlew " \
-    #         "-Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 " \
-    #         "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
-    #         "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
-    #         "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
+    command="./gradlew " \
+            "-Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 " \
+            "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
+            "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
+            "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
     workdir="/home/gradle/project/"
 
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
