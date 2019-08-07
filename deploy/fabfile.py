@@ -232,7 +232,7 @@ def deployci(c):
             c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
             c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
             generate_env(c, 'TARGET_PATH', '/home/storrellas/workspace/we_are_nutrition-android' )
-            generate_env(c, 'PROXY', 'http://barc.proxy.corp.sopra:8080' )
+            generate_env(c, 'HTTP_PROXY', 'http://barc.proxy.corp.sopra:8080' )
             c.run('cat ./docker/.env', echo=True)
 
 
