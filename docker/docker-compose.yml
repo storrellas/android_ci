@@ -37,8 +37,10 @@ services:
     command: "java -jar /usr/share/jenkins/jenkins.war"
   jenkins:
     image: jenkins/jenkins
+    user: root
     volumes:
       - $JENKINS_HOME:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - $JENKINS_PORT_2:8080
     

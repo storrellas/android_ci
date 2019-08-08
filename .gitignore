@@ -9,7 +9,7 @@ node_modules
 package-lock.json
 *dist*
 *.pyc
-tutorial.txt
+#tutorial.txt
 deploy/rsa/*
 *localsettings.py
 *config.json
