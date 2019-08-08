@@ -27,12 +27,25 @@ ENV ANDROID_HOME="/opt/android-sdk"
 ENV PATH="${PATH}:${ANDROID_HOME}/tools/bin"
 ENV PATH="${PATH}:${ANDROID_HOME}/platform-tools"
 RUN env
-RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
+#RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
 
 # CONFIGURE android-sdk
-RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platforms;android-28"
-RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platform-tools"
-RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "build-tools;28.0.3"
+# RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platforms;android-28"
+# RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platform-tools"
+# RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "build-tools;28.0.3"
+# RUN yes | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 --licenses
 
-RUN yes | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 --licenses
+RUN echo y | sdkmanager "platforms;android-28"
+RUN echo y | sdkmanager "platform-tools"
+RUN echo y | sdkmanager "build-tools;28.0.3"
+RUN yes | sdkmanager --licenses
+
+# Install Jenkins
+RUN apt install -y gnupg2
+RUN wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | apt-key add -
+RUN bash -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+RUN apt update
+RUN apt install -y jenkins
+
+#CMD export JENKINS_HOME=/var/lib/jenkins && java -jar /usr/share/jenkins/jenkins.war
 
