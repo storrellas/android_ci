@@ -206,7 +206,7 @@ def generate_key_env(c, key, value):
     Generates specific key for docker
     """
     str_escaped = re.escape(value)
-    c.run('sudo sed -i "s/.*{}.*/{}={}/" ./docker/.env'.format(key, key, str_escaped), echo=True)
+    c.run('sudo sed -i "s/.*{}.*/{}={}/" ./docker/.env'.format(key + "=", key, str_escaped), echo=True)
 
 def generate_env(c):
     """
