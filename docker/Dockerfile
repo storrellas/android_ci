@@ -32,10 +32,10 @@ RUN env
 #RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
 
 # CONFIGURE android-sdk
-RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platforms;android-28"
-RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "platform-tools"
-RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 "build-tools;28.0.3"
-RUN yes | sdkmanager --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080 --licenses
+RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=${HTTP_PROXY_HOST} --proxy_port=${HTTP_PROXY_PORT} "platforms;android-28"
+RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=${HTTP_PROXY_HOST} --proxy_port=${HTTP_PROXY_PORT} "platform-tools"
+RUN echo y | sdkmanager --no_https --proxy=http --proxy_host=${HTTP_PROXY_HOST} --proxy_port=${HTTP_PROXY_PORT} "build-tools;28.0.3"
+RUN yes | sdkmanager --no_https --proxy=http --proxy_host=${HTTP_PROXY_HOST} --proxy_port=${HTTP_PROXY_PORT} --licenses
 
 # RUN echo y | sdkmanager "platforms;android-28"
 # RUN echo y | sdkmanager "platform-tools"
