@@ -26,8 +26,8 @@ services:
       dockerfile: docker/Dockerfile
       args:
         - HTTP_PROXY=${HTTP_PROXY}
-        - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
-        - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
+        - HTTP_PROXY_HOST=TEST
+        - HTTP_PROXY_PORT=TEST
     volumes:
       - ${TARGET_PATH}:/home/gradle/project/
     extra_hosts:
