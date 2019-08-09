@@ -30,11 +30,6 @@ services:
       - ${TARGET_PATH}:/home/gradle/project/
     extra_hosts:
       - "nexus.nespresso.com:192.168.216.107"
-    ports:
-      - $JENKINS_PORT_1:8080
-    environment:
-      - JENKINS_HOME=/var/lib/jenkins
-    command: "java -jar /usr/share/jenkins/jenkins.war"
   jenkins:
     image: jenkins/jenkins
     user: root
@@ -42,6 +37,6 @@ services:
       - $JENKINS_HOME:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - $JENKINS_PORT_2:8080
+      - $JENKINS_PORT:8080
     
 
