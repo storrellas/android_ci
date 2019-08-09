@@ -24,16 +24,19 @@ def run_container_volume():
   print(logs.decode())
 
 def run_container_gradle():
-  command="./gradlew build"
+  command="./gradlew " \
+            "-Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 " \
+            "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
+            "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
+            "-Dhttps.nonProxyHosts=nexus.nespresso.com build --debug"
   container = client.containers.run(image="android_ci", 
                                 command=command, 
-                                log_config=LogConfig(type=LogConfig.types.SYSLOG, config={}),
+                                #log_config=LogConfig(type=LogConfig.types.SYSLOG, config={}),
                                 working_dir="/home/gradle/project/",
                                 volumes={'/home/vagrant/workspace/we_are_nutrition-android': {'bind': '/home/gradle/project/', 'mode': 'rw'}},
                                 extra_hosts={"nexus.nespresso.com":"192.168.216.107"}, detach=True)
-  # It comes as bytes -> Silly thing
-  # logs = container.logs()
-  # print(logs.decode())
+  for line in container.logs(stream=True):
+    print(line.strip())
 
 
 def run_container_gradle_syslog():
