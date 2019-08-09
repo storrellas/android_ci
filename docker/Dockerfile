@@ -1,5 +1,8 @@
 FROM gradle:latest
 
+ARG HTTP_PROXY
+ARG HTTP_PROXY_HOST
+ARG HTTP_PROXY_PORT
 
 ENV HTTP_PROXY ${HTTP_PROXY}
 ENV HTTPS_PROXY ${HTTP_PROXY}
@@ -28,14 +31,6 @@ WORKDIR /opt/android-sdk/
 ENV ANDROID_HOME="/opt/android-sdk"
 ENV PATH="${PATH}:${ANDROID_HOME}/tools/bin"
 ENV PATH="${PATH}:${ANDROID_HOME}/platform-tools"
-
-ENV HTTP_PROXY_HOST "SERGI:${TEST}:"
-ENV HTTP_PROXY_PORT ${TEST}
-RUN env
-RUN env
-RUN env
-RUN env
-RUN env
 #RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
 
 # CONFIGURE android-sdk
