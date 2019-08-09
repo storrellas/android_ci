@@ -34,6 +34,7 @@ ENV HTTP_PROXY_PORT "${HTTP_PROXY_PORT}"
 RUN env
 RUN env
 RUN env
+RUN env
 #RUN sdkmanager --list --verbose --no_https --proxy=http --proxy_host=barc.proxy.corp.sopra --proxy_port=8080
 
 # CONFIGURE android-sdk
