@@ -218,8 +218,8 @@ def generate_env(c):
     c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
     generate_key_env(c, 'TARGET_PATH', config['target_path'] )
     generate_key_env(c, 'HTTP_PROXY', config['http_proxy'] )
-    generate_key_env(c, 'HTTP_PROXY_HOST', config['http_proxy'] )
-    generate_key_env(c, 'HTTP_PROXY_PORT', config['http_proxy'] )
+    generate_key_env(c, 'HTTP_PROXY_HOST', "barc.proxy.corp.sopra" )
+    generate_key_env(c, 'HTTP_PROXY_PORT', "8080" )
     c.run('cat ./docker/.env', echo=True)
 
 @task(hosts=my_hosts)
