@@ -28,7 +28,7 @@ services:
         - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
         - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
     environment:
-      - REPO_URL=git@innersource.soprasteria.com:digitalfactory/nestle/we_are_nutrition-android.git
+      - REPO_URL=${REPO_URL}
     volumes:
       - ${TARGET_PATH}:/home/gradle/project/
       - ${PRIVATE_KEY_PATH}:/root/.ssh/id_rsa
