@@ -22,7 +22,7 @@ services:
     tty: true
     build:
       context: ..
-      dockerfile: docker/AndroidCI.Dockerfile
+      dockerfile: docker/AndroidCI.Ubuntu.Dockerfile
       args:
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}

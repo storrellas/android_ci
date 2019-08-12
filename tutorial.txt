@@ -4,3 +4,11 @@ https://medium.com/better-programming/about-var-run-docker-sock-3bfd276e12fd
 curl -XPOST --unix-socket /var/run/docker.sock -d '{"Image":"android_ci", "Cmd": ["date"], "LogConfig": { "Type": "syslog", "Config": {} } }' -H 'Content-Type: application/json' http://localhost/containers/create
 # Start container
 curl -XPOST --unix-socket /var/run/docker.sock  -H 'Content-Type: application/json' http://localhost/containers/1bcd2f04e6c23fbfd910cab45e757dd166969f462efe7d57e7ee2bcd70c45d6f/start
+
+++ NEXT STEPS ++
+(1) Run android_ci with a python script that receives a repo/branch and performs the build
+(2) Launch in Jenkins pipeline
+
+
+Follow this:
+https://technologyconversations.com/2017/06/16/automating-jenkins-docker-setup/
