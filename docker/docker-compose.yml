@@ -19,11 +19,10 @@ version: "3"
 services:
   android_ci:
     image: android_ci
-    restart: always
     tty: true
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/AndroidCI.Dockerfile
       args:
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
@@ -32,9 +31,13 @@ services:
       - ${TARGET_PATH}:/home/gradle/project/
     extra_hosts:
       - "nexus.nespresso.com:192.168.216.107"
-  jenkins:
-    image: jenkins/jenkins
+  jenkins_ci:
+    image: jenkins_ci
     user: root
+    tty: true
+    build:
+      context: ..
+      dockerfile: docker/Jenkins.Dockerfile
     volumes:
       - $JENKINS_HOME:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
