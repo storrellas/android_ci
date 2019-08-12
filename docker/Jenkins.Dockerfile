@@ -5,7 +5,7 @@ LABEL MAINTAINER sergi.torrellas@soprasteria.com
 USER root
 RUN apt update
 RUN apt install -y python3 python3-pip
-RUN pip3 install docker-py
+RUN pip3 install docker
 
 # Add src docker
 ADD ./src/ /repo/
