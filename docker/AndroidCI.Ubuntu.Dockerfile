@@ -23,7 +23,7 @@ RUN apt-get update
 RUN apt-get install unzip nano dnsutils wget openjdk-8-jdk -y
 
 # Install gradle
-RUN wget https://services.gradle.org/distributions/gradle-5.1.1-bin.zip -P /tmp
+RUN wget https://services.gradle.org/distributions/gradle-5.1.1-all.zip -P /tmp
 RUN unzip -d /opt/gradle /tmp/gradle-*.zip
 ENV GRADLE_HOME /opt/gradle/gradle-5.1.1
 ENV PATH ${GRADLE_HOME}/bin:${PATH}
@@ -32,7 +32,6 @@ ENV PATH ${GRADLE_HOME}/bin:${PATH}
 RUN wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
 RUN mkdir android-sdk
 RUN unzip sdk-tools-linux-4333796.zip -d /opt/android-sdk/
-WORKDIR /opt/android-sdk/
 
 # Export the Android SDK path
 ENV ANDROID_HOME="/opt/android-sdk"
@@ -50,5 +49,8 @@ RUN echo y | sdkmanager "platforms;android-28"
 RUN echo y | sdkmanager "platform-tools"
 RUN echo y | sdkmanager "build-tools;28.0.3"
 RUN yes | sdkmanager --licenses
+
+WORKDIR /home/gradle/project/
+CMD gradle --version
 
 
