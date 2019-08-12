@@ -18,9 +18,8 @@ ARG HTTP_PROXY_PORT
 
 # Install dependencies
 RUN env
-RUN ls -la
 RUN apt-get update
-RUN apt-get install unzip nano dnsutils wget openjdk-8-jdk -y
+RUN apt-get install unzip nano dnsutils wget openjdk-8-jdk git -y
 
 # Install gradle
 RUN wget https://services.gradle.org/distributions/gradle-5.1.1-all.zip -P /tmp
