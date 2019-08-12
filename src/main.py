@@ -63,12 +63,33 @@ def run_container_gradle_noproxy():
   for line in container.logs(stream=True):
     print(line.strip())
 
+def run_container_startup():
+  command="bash -x /root/startup.sh"
+
+  volumes = {
+    '/home/vagrant/workspace/we_are_nutrition-android': {'bind': '/home/gradle/project/', 'mode': 'rw'},
+    '/home/vagrant/.ssh/id_rsa': {'bind': '/root/.ssh/id_rsa', 'mode': 'rw'},
+    '/home/vagrant/workspace/android_ci/src/startup.sh': {'bind': '/root/startup.sh', 'mode': 'rw'}
+  }
+
+  container = client.containers.run(image="android_ci", 
+                                command=command, 
+                                #log_config=LogConfig(type=LogConfig.types.SYSLOG, config={}),
+                                working_dir="/root/",
+                                volumes=volumes,
+                                environment={'REPO_URL':'git@innersource.soprasteria.com:digitalfactory/nestle/we_are_nutrition-android.git'},
+                                extra_hosts={"nexus.nespresso.com":"192.168.216.107"}, detach=True)
+  for line in container.logs(stream=True):
+    print(line.strip())
 
 if __name__ == "__main__":
   client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 
   #run_container_volume()
   #run_container_gradle()
-  run_container_gradle_noproxy()
+  #run_container_gradle_noproxy()
+
+  run_container_startup()
+
 
   
