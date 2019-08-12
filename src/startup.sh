@@ -21,10 +21,9 @@ repo_name=${basename%.*}
 
 # Clone
 git clone $url
-cd $repo
-ls -la
+cd $repo_name
 
 # Launch gradle
-#./gradlew build --debug
+./gradlew build --debug
 
 
