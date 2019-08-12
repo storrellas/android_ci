@@ -32,7 +32,6 @@ services:
     volumes:
       - ${TARGET_PATH}:/home/gradle/project/
       - ${PRIVATE_KEY_PATH}:/root/.ssh/id_rsa
-      - ../src/startup.sh:/root/startup.sh
     extra_hosts:
       - "nexus.nespresso.com:192.168.216.107"
   jenkins_ci:

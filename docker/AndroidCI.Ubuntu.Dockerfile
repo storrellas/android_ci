@@ -49,7 +49,8 @@ RUN echo y | sdkmanager "platform-tools"
 RUN echo y | sdkmanager "build-tools;28.0.3"
 RUN yes | sdkmanager --licenses
 
-WORKDIR /home/gradle/project/
-CMD gradle --version
+WORKDIR /root/
+ADD ./docker/startup.sh.default /root/startup.sh
+CMD bash -x /root/startup.sh
 
 

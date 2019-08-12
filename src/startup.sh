@@ -4,8 +4,8 @@
 # url="https://github.com/some-user/my-repo.git"
 url=$REPO_URL
 
+# Host
 re="^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/(.+).git$"
-
 if [[ $url =~ $re ]]; then    
     protocol=${BASH_REMATCH[1]}
     separator=${BASH_REMATCH[2]}
@@ -13,17 +13,18 @@ if [[ $url =~ $re ]]; then
     user=${BASH_REMATCH[4]}
     repo=${BASH_REMATCH[5]}
 fi
+ssh-keyscan -H $hostname >> ~/.ssh/known_hosts
 
+# Get repo_name
 basename=$(basename $url)
 repo_name=${basename%.*}
 
 # Clone
-ssh-keyscan -H $hostname >> ~/.ssh/known_hosts
 git clone $url
-cd $repo_name
+cd $repo
 ls -la
 
 # Launch gradle
-./gradlew build --debug
+#./gradlew build --debug
 
 
