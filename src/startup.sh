@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Copy public key and set permission
+cp -rv /root/provision/id_rsa /root/.ssh/
+chown 600 /root/.ssh/id_rsa
+
 # url="git://github.com/some-user/my-repo.git"
 # url="https://github.com/some-user/my-repo.git"
 url=$REPO_URL
