@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Copy public key and set permission
+mkdir /root/.ssh
 cp -rv /root/provision/id_rsa /root/.ssh/
 chown 600 /root/.ssh/id_rsa
 
