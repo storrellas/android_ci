@@ -31,7 +31,7 @@ services:
       - REPO_URL=${REPO_URL}
     volumes:
       - ${TARGET_PATH}:/root/workspace/
-      - ${PRIVATE_KEY_PATH}:/root/provision/id_rsa
+      - ${PRIVATE_KEY_REMOTE_PATH}:/root/provision/id_rsa
       - ../src/startup.sh:/root/startup.sh
     extra_hosts:
       - "nexus.nespresso.com:192.168.216.107"
