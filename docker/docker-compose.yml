@@ -42,6 +42,10 @@ services:
     build:
       context: ..
       dockerfile: docker/Jenkins.Dockerfile
+      args:
+        - HTTP_PROXY=${HTTP_PROXY}
+        - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
+        - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
     volumes:
       - $JENKINS_HOME:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
