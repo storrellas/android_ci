@@ -221,6 +221,7 @@ def generate_env(c):
     generate_key_env(c, 'HTTP_PROXY_HOST', "barc.proxy.corp.sopra" )
     generate_key_env(c, 'HTTP_PROXY_PORT', "8080" )
     generate_key_env(c, 'REPO_URL', config['repository'])
+    generate_key_env(c, 'PRIVATE_KEY_PATH', config['PRIVATE_KEY_REMOTE_PATH'])
     c.run('cat ./docker/.env', echo=True)
 
 @task(hosts=my_hosts)
@@ -294,5 +295,6 @@ def build(c):
         # Generate docker image
         print_init_banner('Docker image ... ')
         with c.cd(repo_ci_folder + '/' + docker_folder):
-            c.run('sudo docker-compose run -w "{}" android_ci {}'.format(workdir, command), echo=True)
+            #c.run('sudo docker-compose run -w "{}" android_ci {}'.format(workdir, command), echo=True)
+            c.run('sudo docker-compose up android_ci', echo=True)
         print_end_banner()
