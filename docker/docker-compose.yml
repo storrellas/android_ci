@@ -30,7 +30,7 @@ services:
     environment:
       - REPO_URL=${REPO_URL}
     volumes:
-      - ${TARGET_PATH}:/home/gradle/project/
+      - ${TARGET_PATH}:/root/workspace/
       - ${PRIVATE_KEY_PATH}:/root/.ssh/id_rsa
       - ../src/startup.sh:/root/startup.sh
     extra_hosts:

@@ -24,6 +24,10 @@ git clone $url
 cd $repo_name
 
 # Launch gradle
-./gradlew build --debug
+#./gradlew build --debug
+./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080  \
+        -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080  \
+        -Dhttp.nonProxyHosts=nexus.nespresso.com  \
+        -Dhttps.nonProxyHosts=nexus.nespresso.com build --debug
 
 
