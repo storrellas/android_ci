@@ -25,6 +25,7 @@ basename=$(basename $url)
 repo_name=${basename%.*}
 
 # Clone
+cd workspace
 git clone $url
 cd $repo_name
 

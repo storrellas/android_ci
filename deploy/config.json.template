@@ -6,6 +6,6 @@
    "git_key_public": "/home/vagrant/.ssh/id_rsa.pub",
    "git_key_private": "/home/vagrant/.ssh/id_rsa",
    "git_key_remote": "/home/storrellas/.ssh/id_rsa",
-   "target_path": "/home/storrellas/workspace/we_are_nutrition-android",
+   "target_path": "/home/storrellas/workspace",
    "http_proxy": "http://barc.proxy.corp.sopra:8080"
 }
