@@ -4,7 +4,7 @@
 # url="https://github.com/some-user/my-repo.git"
 url=$REPO_URL
 
-# Host
+# Get Host
 re="^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/(.+).git$"
 if [[ $url =~ $re ]]; then    
     protocol=${BASH_REMATCH[1]}

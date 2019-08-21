@@ -35,8 +35,8 @@ services:
       - ../src/startup.sh:/root/startup.sh
     extra_hosts:
       - "nexus.nespresso.com:192.168.216.107"
-  jenkins_ci:
-    image: jenkins_ci
+  jenkins:
+    image: jenkins
     user: root
     tty: true
     build:

@@ -67,7 +67,6 @@ def run_container_startup():
   command="bash -x /root/startup.sh"
 
   volumes = {
-    '/home/vagrant/workspace/we_are_nutrition-android': {'bind': '/home/gradle/project/', 'mode': 'rw'},
     '/home/vagrant/.ssh/id_rsa': {'bind': '/root/.ssh/id_rsa', 'mode': 'rw'},
     '/home/vagrant/workspace/android_ci/src/startup.sh': {'bind': '/root/startup.sh', 'mode': 'rw'}
   }
