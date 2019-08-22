@@ -32,3 +32,10 @@ RUN apt install -y docker-ce
 
 # Add src docker
 ADD ./src/ /repo/
+
+# Running jenkins manually
+RUN java -Dhttp.proxyHost=$HTTP_PROXY_HOST \ 
+      -Dhttp.proxyPort=$HTTP_PROXY_PORT \ 
+      -Duser.home=/var/jenkins_home \
+      -Djenkins.model.Jenkins.slaveAgentPort=50000 \
+      -jar /usr/share/jenkins/jenkins.war
