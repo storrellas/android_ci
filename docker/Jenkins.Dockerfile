@@ -12,12 +12,13 @@ ENV https_proxy ${HTTP_PROXY}
 ENV HTTP_PROXY_HOST ${HTTP_PROXY_HOST}
 ENV HTTP_PROXY_PORT ${HTTP_PROXY_PORT}
 
+USER root
+
 # Configuration for apt
 RUN echo "Acquire::http::Proxy  \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_http
 RUN echo "Acquire::https::Proxy \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_https
 
 # Install python3
-USER root
 RUN apt update
 RUN apt install -y python3 python3-pip
 RUN pip3 install docker
