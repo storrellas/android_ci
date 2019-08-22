@@ -1,5 +1,7 @@
 #!/bin/bash
 
+env
+
 # Copy public key and set permission
 mkdir /root/.ssh
 cp -rv /root/provision/id_rsa /root/.ssh/
@@ -26,14 +28,20 @@ repo_name=${basename%.*}
 
 # Clone
 cd $TARGET_PATH_WORKSPACE
-git clone $url
-cd $repo_name
+if [ -d $repo_name ]; then
+    cd $repo_name
+    git pull origin master
+else
+    git clone $url
+    cd $repo_name
+fi
+
 
 # Launch gradle
 #./gradlew build --debug
 ./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080  \
         -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080  \
         -Dhttp.nonProxyHosts=nexus.nespresso.com  \
-        -Dhttps.nonProxyHosts=nexus.nespresso.com build --debug
+        -Dhttps.nonProxyHosts=nexus.nespresso.com build
 
 
