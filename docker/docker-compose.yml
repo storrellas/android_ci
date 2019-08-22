@@ -29,7 +29,7 @@ services:
         - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
     environment:
       - REPO_URL=${REPO_URL}
-      - TARGET_PATH_CONTAINER=/root/workspace
+      - TARGET_PATH_WORKSPACE=/root/workspace
     volumes:
       - ${TARGET_PATH}:/root/workspace/
       - ${PRIVATE_KEY_REMOTE_PATH}:/root/provision/id_rsa
