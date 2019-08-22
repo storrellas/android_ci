@@ -29,10 +29,12 @@ repo_name=${basename%.*}
 # Clone
 cd $TARGET_PATH_WORKSPACE
 if [ -d $repo_name ]; then
+    echo "Repo exists ..."
     cd $repo_name
     git checkout develop
     git pull origin develop
 else
+    echo "Repo NOT exists. Cloning ..."
     git clone $url
     cd $repo_name
     git checkout develop
