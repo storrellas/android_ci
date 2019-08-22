@@ -30,6 +30,13 @@ RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debia
 RUN apt update
 RUN apt install -y docker-ce
 
+# Install docker-compose
+RUN curl -L \
+      https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)\ 
+      -o /usr/local/bin/docker-compose
+RUN chmod +x /usr/local/bin/docker-compose
+RUN docker-compose --version
+
 # Add src docker
 ADD ./src/ /repo/
 
