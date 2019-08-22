@@ -312,7 +312,21 @@ def launch(c):
 
     print_init_banner('Docker image ... ')
     with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
-        c.run('sudo docker-compose stop', echo=True)
-        c.run('sudo docker-compose up -s jenkins', echo=True)
+        c.run('sudo docker-compose stop jenkins', echo=True)
+        c.run('sudo docker-compose up -d jenkins', echo=True)
 
     print_end_banner()
+
+@task(hosts=my_hosts)
+def halt(c):
+    """
+    halt docker
+    """
+    print_init_banner('Stop docker')
+    print_end_banner()
+
+    # Get repo folder from URL
+    repo_folder = get_repo_folder(config['repository_android_ci'])
+
+    with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
+        c.run('sudo docker-compose stop jenkins', echo=True)

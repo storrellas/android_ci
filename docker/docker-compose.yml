@@ -52,5 +52,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - $JENKINS_PORT:8080
+    logging:
+     driver: "syslog"
+     options:
+       tag: "android_ci"
     
 
