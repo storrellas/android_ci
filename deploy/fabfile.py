@@ -313,6 +313,6 @@ def launch(c):
     print_init_banner('Docker image ... ')
     with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
         c.run('sudo docker-compose stop', echo=True)
-        c.run('sudo docker-compose up jenkins -d', echo=True)
+        c.run('sudo docker-compose up -s jenkins', echo=True)
 
     print_end_banner()
