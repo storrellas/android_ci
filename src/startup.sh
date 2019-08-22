@@ -30,7 +30,7 @@ repo_name=${basename%.*}
 cd $TARGET_PATH_WORKSPACE
 if [ -d $repo_name ]; then
     cd $repo_name
-    git pull origin master
+    git pull origin develop
 else
     git clone $url
     cd $repo_name
