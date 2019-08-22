@@ -42,6 +42,6 @@ fi
 ./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080  \
         -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080  \
         -Dhttp.nonProxyHosts=nexus.nespresso.com  \
-        -Dhttps.nonProxyHosts=nexus.nespresso.com build
+        -Dhttps.nonProxyHosts=nexus.nespresso.com build --debug
 
 
