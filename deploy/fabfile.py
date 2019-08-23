@@ -11,8 +11,12 @@ import utils
 aws = {}
 aws['host'] = 'storrellas@10.99.21.72'
 aws['connect_kwargs'] = {"key_filename": "/home/vagrant/.ssh/id_rsa"}
-my_hosts = [aws]
 
+localhost = {}
+localhost['host'] = 'sergi@127.0.0.1'
+localhost['connect_kwargs'] = {"key_filename": "/home/sergi/.ssh/id_rsa"}
+
+my_hosts = [localhost]
 
 # Create logger
 logger = utils.get_logger()
@@ -229,8 +233,26 @@ def deployci(c):
     """
     Builds gradle image
     """
-
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+
+    # proceeding to deployment
+    print_init_banner('Deploying to folder ' + config['repository_android_ci'])
+    if c.run('test -d {}'.format(config['remote_workspace']), warn=True).failed:
+        logger.info("Creating folder")
+        c.run('mkdir ' + config['remote_workspace'])
+    print_end_banner()
+
+    # Remote tasks
+    with c.cd(config['remote_workspace']):
+
+        # Cloning repository
+        print_init_banner('Cloning project repository ... ')
+        if c.run('test -d {}'.format(repo_ci_folder), warn=True).failed:
+            c.run('git clone ' + config['repository_android_ci'], echo=True, pty=True)
+        else:
+            logger.info('Repository exists skipping')
+        print_end_banner()
+
     with c.cd(config['remote_workspace']):
 
         # Get latest changes
