@@ -42,14 +42,16 @@ services:
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
         - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
+    environment:
+      - JENKINS_HOME_HOST=${JENKINS_HOME}
     volumes:
       - ${JENKINS_HOME}:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - $JENKINS_PORT:8080
-    logging:
-     driver: "syslog"
-     options:
-       tag: "android_ci"
+    #logging:
+    # driver: "syslog"
+    # options:
+    #   tag: "android_ci"
     
 
