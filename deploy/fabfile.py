@@ -285,24 +285,27 @@ def build(c):
     Run gradle image to build image
     """
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    repo_folder = get_repo_folder(config['repository'])
 
 
-    # Remote tasks
+
+    # Clone project repository
     with c.cd(config['remote_workspace']):
 
         # Cloning repository
         print_init_banner('Cloning project repository ... ')
-        if c.run('test -d {}'.format(repo_ci_folder), warn=True).failed:
-            c.run('git clone ' + config['repository_android_ci'], echo=True, pty=True)
+        if c.run('test -d {}'.format(repo_folder), warn=True).failed:
+            c.run('git clone ' + config['repository'], echo=True, pty=True)
         else:
             logger.info('Repository exists skipping')
         print_end_banner()
 
+    # Get latest changes project repository
     with c.cd(config['remote_workspace']):
 
         # Get latest changes
         print_init_banner('Git pull ... ')          
-        with c.cd(repo_ci_folder):
+        with c.cd(repo_folder):
             # Get specific branch
             #if  config['branch'] is not None:
             if False:
@@ -312,47 +315,45 @@ def build(c):
             else:
                 c.run('git pull origin master', echo=True, pty=True)
 
-            # Upload configuration to .env
-            generate_env(c)
-
         print_end_banner()
 
 
 
-    # # Generate environment
-    # print_init_banner('Generate .env ... ')          
-    # with c.cd(config['remote_workspace'] + '/' + repo_ci_folder):
-    #     # Upload configuration to .env
-    #     generate_env(c) 
-    # print_end_banner()
+    # Generate environment
+    print_init_banner('Generate .env ... ')          
+    with c.cd(config['remote_workspace'] + '/' + repo_ci_folder):
+        # Upload configuration to .env
+        generate_env(c) 
+    print_end_banner()
 
 
-    # # Launch build
-    # #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
-    # #command="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com tasks --all"
+    # Launch build
+    #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com  assemble"
+    #command="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com tasks --all"
 
-    # #command="java -version"
-    # #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com dependencies"
+    #command="java -version"
+    #command="./project/gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com dependencies"
     
 
-    # #command="./gradlew tasks --all"
-    # #command="./gradlew build"
+    #command="./gradlew tasks --all"
+    command="./gradlew build"
+    #command="ls -la"
     # command="./gradlew " \
     #         "-Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 " \
     #         "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
     #         "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
     #         "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
-    # workdir="/home/gradle/project/"
+    workdir="/root/workspace/" + repo_folder + "/"
 
-    # repo_ci_folder = get_repo_folder(config['repository_android_ci'])
-    # with c.cd(config['remote_workspace']):
+    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    with c.cd(config['remote_workspace']):
    
-    #     # Generate docker image
-    #     print_init_banner('Docker image ... ')
-    #     with c.cd(repo_ci_folder + '/' + docker_folder):
-    #         #c.run('sudo docker-compose run -w "{}" android_ci {}'.format(workdir, command), echo=True)
-    #         c.run('sudo docker-compose up android_ci', echo=True)
-    #     print_end_banner()
+        # Generate docker image
+        print_init_banner('Docker image ... ')
+        with c.cd(repo_ci_folder + '/' + docker_folder):
+            c.run('sudo docker-compose run -w "{}" android_ci {}'.format(workdir, command), echo=True)
+            #c.run('sudo docker-compose up android_ci', echo=True)
+        print_end_banner()
 
 @task(hosts=my_hosts)
 def launch(c):

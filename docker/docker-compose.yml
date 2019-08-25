@@ -27,13 +27,8 @@ services:
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
         - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
-    environment:
-      - REPO_URL=${REPO_URL}
-      - TARGET_PATH_WORKSPACE=/root/workspace
     volumes:
       - ${TARGET_PATH}:/root/workspace/
-      - ${PRIVATE_KEY_REMOTE_PATH}:/root/provision/id_rsa
-      - ../src/startup.sh:/root/startup.sh
     extra_hosts:
       - "nexus.nespresso.com:192.168.216.107"
   jenkins:
