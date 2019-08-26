@@ -37,6 +37,11 @@ RUN curl -L \
 RUN chmod +x /usr/local/bin/docker-compose
 RUN docker-compose --version
 
+# Install NodeJS
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+RUN apt-get install -y nodejs
+RUN npm install -g appcenter-cli
+
 # Running jenkins manually
 CMD java -Dhttp.proxyHost=$HTTP_PROXY_HOST \ 
       -Dhttp.proxyPort=$HTTP_PROXY_PORT \ 

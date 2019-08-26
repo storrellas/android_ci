@@ -1,0 +1,1 @@
+appcenter login --token bde06361b069a1d2f1d25739a9b973cb382adeff

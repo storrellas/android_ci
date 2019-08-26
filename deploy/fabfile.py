@@ -334,13 +334,13 @@ def build(c):
     
 
     #command="./gradlew tasks --all"
-    command="./gradlew build"
+    #command="./gradlew build"
     #command="ls -la"
-    # command="./gradlew " \
-    #         "-Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 " \
-    #         "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
-    #         "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
-    #         "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
+    command="./gradlew " \
+            "-Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 " \
+            "-Dhttps.proxyHost=barc.proxy.corp.sopra -Dhttps.proxyPort=8080 " \
+            "-Dhttp.nonProxyHosts=nexus.nespresso.com " \
+            "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
     workdir="/root/workspace/" + repo_folder + "/"
 
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
