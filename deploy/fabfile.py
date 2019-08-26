@@ -224,8 +224,6 @@ def generate_env(c):
     generate_key_env(c, 'HTTP_PROXY', config['http_proxy'] )
     generate_key_env(c, 'HTTP_PROXY_HOST', "barc.proxy.corp.sopra" )
     generate_key_env(c, 'HTTP_PROXY_PORT', "8080" )
-    generate_key_env(c, 'REPO_URL', config['repository'])
-    generate_key_env(c, 'PRIVATE_KEY_REMOTE_PATH', config['git_key_remote'])
     c.run('cat ./docker/.env', echo=True)
 
 @task(hosts=my_hosts)
