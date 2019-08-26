@@ -4,6 +4,7 @@ LABEL MAINTAINER sergi.torrellas@soprasteria.com
 ARG HTTP_PROXY
 ARG HTTP_PROXY_HOST
 ARG HTTP_PROXY_PORT
+ARG APPCENTER_TOKEN
 
 ENV HTTP_PROXY ${HTTP_PROXY}
 ENV HTTPS_PROXY ${HTTP_PROXY}
@@ -37,10 +38,11 @@ RUN curl -L \
 RUN chmod +x /usr/local/bin/docker-compose
 RUN docker-compose --version
 
-# Install NodeJS
+# install appcenter-cli
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 RUN apt-get install -y nodejs
-RUN npm install -g appcenter-cli
+RUN npm install -g appcenter-cli --loglevel verbose
+RUN appcenter login --token ${APPCENTER_TOKEN}
 
 # Running jenkins manually
 CMD java -Dhttp.proxyHost=$HTTP_PROXY_HOST \ 

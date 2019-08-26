@@ -42,6 +42,7 @@ services:
         - HTTP_PROXY=${HTTP_PROXY}
         - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
         - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
+        - APPCENTER_TOKEN=${APPCENTER_TOKEN}
     environment:
       - JENKINS_HOME_HOST=${JENKINS_HOME}
     volumes:
