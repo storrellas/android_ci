@@ -16,7 +16,7 @@ localhost = {}
 localhost['host'] = 'sergi@127.0.0.1'
 localhost['connect_kwargs'] = {"key_filename": "/home/sergi/.ssh/id_rsa"}
 
-my_hosts = [localhost]
+my_hosts = [aws]
 
 # Create logger
 logger = utils.get_logger()
