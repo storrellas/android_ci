@@ -54,5 +54,14 @@ services:
     # driver: "syslog"
     # options:
     #   tag: "android_ci"
+  sonarqube:
+    image: sonarqube
+    tty: true
+    ports:
+      - $SONARQUBE_PORT:9000
+    #logging:
+    # driver: "syslog"
+    # options:
+    #   tag: "android_ci"
     
 
