@@ -19,6 +19,8 @@ USER root
 RUN echo "Acquire::http::Proxy  \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_http
 RUN echo "Acquire::https::Proxy \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_https
 
+USER sonarqube
+
 # Modify sonar.properties
 ADD ./docker/sonar.properties /opt/sonarqube/conf
 
