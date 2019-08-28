@@ -224,6 +224,7 @@ def generate_env(c):
     generate_key_env(c, 'HTTP_PROXY', config['http_proxy'] )
     generate_key_env(c, 'HTTP_PROXY_HOST', "barc.proxy.corp.sopra" )
     generate_key_env(c, 'HTTP_PROXY_PORT', "8080" )
+    generate_key_env(c, 'APPCENTER_TOKEN', config['appcenter_token'] )
     c.run('cat ./docker/.env', echo=True)
 
 @task(hosts=my_hosts)

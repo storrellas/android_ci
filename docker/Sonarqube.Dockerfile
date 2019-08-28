@@ -1,4 +1,4 @@
-FROM sonarqube
+FROM sonarqube:lts
 LABEL MAINTAINER sergi.torrellas@soprasteria.com
 
 ARG HTTP_PROXY

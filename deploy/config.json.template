@@ -7,5 +7,6 @@
    "git_key_private": "/home/vagrant/.ssh/id_rsa",
    "git_key_remote": "/home/storrellas/.ssh/id_rsa",
    "target_path": "/home/sergi/workspace",
-   "http_proxy": "http://barc.proxy.corp.sopra:8080"
+   "http_proxy": "http://barc.proxy.corp.sopra:8080",
+   "appcenter_token" : ""
 }
