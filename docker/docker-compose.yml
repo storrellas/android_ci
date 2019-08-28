@@ -57,6 +57,14 @@ services:
   sonarqube:
     image: sonarqube
     tty: true
+    build:
+      context: ..
+      dockerfile: docker/Sonarqube.Dockerfile
+      args:
+        - HTTP_PROXY=${HTTP_PROXY}
+        - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
+        - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
+        - APPCENTER_TOKEN=${APPCENTER_TOKEN}
     ports:
       - $SONARQUBE_PORT:9000
     #logging:
