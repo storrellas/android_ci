@@ -367,8 +367,8 @@ def launch(c):
 
     print_init_banner('Docker image ... ')
     with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
-        c.run('sudo docker-compose stop jenkins', echo=True)
-        c.run('sudo docker-compose up -d jenkins', echo=True)
+        c.run('sudo docker-compose stop jenkins sonarqube', echo=True)
+        c.run('sudo docker-compose up -d jenkins sonarqube', echo=True)
 
     print_end_banner()
 
