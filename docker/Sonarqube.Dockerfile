@@ -19,10 +19,26 @@ USER root
 RUN echo "Acquire::http::Proxy  \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_http
 RUN echo "Acquire::https::Proxy \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_https
 
+RUN apt update
+RUN apt install bash
+
+# RUN usermod --shell /bin/bash sonarqube
+# RUN grep sonarqube /etc/passwd
+
 USER sonarqube
 
+
+#CMD "chmod sonarqube:sonarqube -R ./data/; ./bin/run.sh"
+#CMD ["chmod", "sonarqube:sonarqube", "-R", "./data/", "&&", "ls", "-la"]
+#CMD "/bin/bash -x chmod sonarqube:sonarqube -R ./data/"
+CMD whoami; chown sonarqube:sonarqube -R /opt/sonarqube/; ls -la; su sonarqube 
+
+# RUN chmod -R 777 /opt/sonarqube/
+# RUN groupadd -r sonarqube && useradd -r -g sonarqube sonarqube
+#RUN chown -R root:root /opt/sonarqube/
+
 # Modify sonar.properties
-ADD ./docker/sonar.properties /opt/sonarqube/conf
+#ADD ./docker/sonar.properties /opt/sonarqube/conf
 
 # # Install python3
 # RUN apt update
