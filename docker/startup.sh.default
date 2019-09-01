@@ -1,2 +1,0 @@
-#!/bin/bash
-echo "Missing startup.sh. Please mount a volume with startup.sh and place it to /root/ folder. Remember to mount your public key to /root/provision/"

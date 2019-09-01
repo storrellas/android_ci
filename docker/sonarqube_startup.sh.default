@@ -1,0 +1,12 @@
+#!/bin/bash
+
+pwd
+ls -la
+
+sudo chown sonarqube:sonarqube /opt/sonarqube/conf
+sudo chown sonarqube:sonarqube /opt/sonarqube/data
+sudo chown sonarqube:sonarqube /opt/sonarqube/extensions
+
+ls -la
+
+./bin/run.sh

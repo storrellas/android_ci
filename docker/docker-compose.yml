@@ -65,6 +65,8 @@ services:
         - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
         - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
         - APPCENTER_TOKEN=${APPCENTER_TOKEN}
+    working_dir: /opt/sonarqube/
+    command: ./startup.sh
     volumes:
       - /home/vagrant/workspace/android_ci/docker/sonarqube/conf:/opt/sonarqube/conf
       - /home/vagrant/workspace/android_ci/docker/sonarqube/data:/opt/sonarqube/data
