@@ -26,27 +26,10 @@ RUN apt install -y sudo
 RUN echo "sonarqube ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 
-# RUN usermod --shell /bin/bash sonarqube
-# RUN grep sonarqube /etc/passwd
-
 USER sonarqube
 
-RUN sudo cat /etc/sudoers
-
-# Launch sonarqube
+# Add startup script
 ADD ./docker/sonarqube_startup.sh.default /opt/sonarqube/startup.sh
 
-
-#CMD "chmod sonarqube:sonarqube -R ./data/; ./bin/run.sh"
-#CMD ["chmod", "sonarqube:sonarqube", "-R", "./data/", "&&", "ls", "-la"]
-#CMD "/bin/bash -x chmod sonarqube:sonarqube -R ./data/"
-#CMD whoami; chown sonarqube:sonarqube -R /opt/sonarqube/; ls -la; su sonarqube 
-
-# RUN chmod -R 777 /opt/sonarqube/
-# RUN groupadd -r sonarqube && useradd -r -g sonarqube sonarqube
-#RUN chown -R root:root /opt/sonarqube/
-
-# Modify sonar.properties
-#ADD ./docker/sonar.properties /opt/sonarqube/conf
 
 
