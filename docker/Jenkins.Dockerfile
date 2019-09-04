@@ -6,18 +6,18 @@ ARG HTTP_PROXY_HOST
 ARG HTTP_PROXY_PORT
 ARG APPCENTER_TOKEN
 
-ENV HTTP_PROXY ${HTTP_PROXY}
-ENV HTTPS_PROXY ${HTTP_PROXY}
-ENV http_proxy ${HTTP_PROXY}
-ENV https_proxy ${HTTP_PROXY}
-ENV HTTP_PROXY_HOST ${HTTP_PROXY_HOST}
-ENV HTTP_PROXY_PORT ${HTTP_PROXY_PORT}
+# ENV HTTP_PROXY ${HTTP_PROXY}
+# ENV HTTPS_PROXY ${HTTP_PROXY}
+# ENV http_proxy ${HTTP_PROXY}
+# ENV https_proxy ${HTTP_PROXY}
+# ENV HTTP_PROXY_HOST ${HTTP_PROXY_HOST}
+# ENV HTTP_PROXY_PORT ${HTTP_PROXY_PORT}
 
 USER root
 
 # Configuration for apt
-RUN echo "Acquire::http::Proxy  \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_http
-RUN echo "Acquire::https::Proxy \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_https
+# RUN echo "Acquire::http::Proxy  \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_http
+# RUN echo "Acquire::https::Proxy \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/proxy_https
 
 # Install python3
 RUN apt update
@@ -42,11 +42,11 @@ RUN docker-compose --version
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 RUN apt-get install -y nodejs
 RUN npm install -g appcenter-cli --loglevel verbose
-RUN appcenter login --token ${APPCENTER_TOKEN}
+#RUN appcenter login --token ${APPCENTER_TOKEN}
 
 # Running jenkins manually
-CMD java -Dhttp.proxyHost=$HTTP_PROXY_HOST \ 
-      -Dhttp.proxyPort=$HTTP_PROXY_PORT \ 
-      -Duser.home=/var/jenkins_home \
-      -Djenkins.model.Jenkins.slaveAgentPort=50000 \
-      -jar /usr/share/jenkins/jenkins.war
+# CMD java -Dhttp.proxyHost=$HTTP_PROXY_HOST \ 
+#       -Dhttp.proxyPort=$HTTP_PROXY_PORT \ 
+#       -Duser.home=/var/jenkins_home \
+#       -Djenkins.model.Jenkins.slaveAgentPort=50000 \
+#       -jar /usr/share/jenkins/jenkins.war
