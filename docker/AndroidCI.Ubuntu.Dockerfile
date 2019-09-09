@@ -50,7 +50,7 @@ RUN yes | sdkmanager --no_https --proxy=http --proxy_host=${HTTP_PROXY_HOST} --p
 # RUN yes | sdkmanager --licenses
 
 WORKDIR /root/
-ADD ./docker/startup.sh.default /root/startup.sh
+ADD ./docker/android_ci_startup.sh.default /root/startup.sh
 CMD bash -x /root/startup.sh
 
 

@@ -1,0 +1,31 @@
+pipeline {
+    agent any 
+    environment{
+        PROJECT_LOCATION="${env.JENKINS_HOME_HOST}::${PWD}"
+    }
+    stages {
+        stage('Build') { 
+            steps {
+                echo 'CloningRepository'
+                git branch: 'develop', credentialsId: 'root', url: 'git@innersource.soprasteria.com:digitalfactory/nestle/we_are_nutrition-android.git'
+                echo "CurrentPath: ${PWD}"
+
+                echo "${env.JENKINS_HOME_HOST}"
+                echo "${env.PWD}"
+                echo "SERGI IN HERE -> ${PROJECT_LOCATION}"
+                sh "printenv | sort"
+                
+            }
+        }
+        stage('Test') { 
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Deploy') { 
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+}
