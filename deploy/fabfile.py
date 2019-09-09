@@ -156,7 +156,7 @@ def gitSSH(c):
     print_end_banner()
 
 @task(hosts=my_hosts)
-def deploy(c):
+def deployproject(c):
     """
     Clones, Pull and Gradle
     """
@@ -164,7 +164,7 @@ def deploy(c):
     print_end_banner()
 
     # Get repo folder from URL
-    repo_folder = get_repo_folder(config['repository'])
+    repo_folder = get_repo_folder(config['branch_project'])
 
     # Print public key value
     print_init_banner('Using public RSA key')
@@ -185,7 +185,7 @@ def deploy(c):
         # Cloning repository
         print_init_banner('Cloning project repository ... ')
         if c.run('test -d {}'.format(repo_folder), warn=True).failed:
-            c.run('git clone ' + config['repository'], echo=True, pty=True)
+            c.run('git clone ' + config['repository_project'], echo=True, pty=True)
         else:
             logger.info('Repository exists skipping')
         print_end_banner()
@@ -216,7 +216,7 @@ def generate_env(c):
     """
     Generate environment file for docker
     """
-    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    repo_ci_folder = get_repo_folder(config['repository'])
 
     c.put('../{}/.env.template'.format(docker_folder), remote=config['remote_workspace'] + '/' + repo_ci_folder + '/' + docker_folder + '/.env')
     c.run('cp -rv {}/.env.template {}/.env'.format(docker_folder, docker_folder))
@@ -228,14 +228,14 @@ def generate_env(c):
     c.run('cat ./docker/.env', echo=True)
 
 @task(hosts=my_hosts)
-def deployci(c):
+def deploy(c):
     """
     Builds gradle image
     """
-    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    repo_ci_folder = get_repo_folder(config['repository'])
 
     # proceeding to deployment
-    print_init_banner('Deploying to folder ' + config['repository_android_ci'])
+    print_init_banner('Deploying to folder ' + config['repository'])
     if c.run('test -d {}'.format(config['remote_workspace']), warn=True).failed:
         logger.info("Creating folder")
         c.run('mkdir ' + config['remote_workspace'])
@@ -247,7 +247,7 @@ def deployci(c):
         # Cloning repository
         print_init_banner('Cloning project repository ... ')
         if c.run('test -d {}'.format(repo_ci_folder), warn=True).failed:
-            c.run('git clone ' + config['repository_android_ci'], echo=True, pty=True)
+            c.run('git clone ' + config['repository'], echo=True, pty=True)
         else:
             logger.info('Repository exists skipping')
         print_end_banner()
@@ -284,7 +284,7 @@ def build(c):
     Run gradle image to build image
     """
     repo_ci_folder = get_repo_folder(config['repository_android_ci'])
-    repo_folder = get_repo_folder(config['repository'])
+    repo_folder = get_repo_folder(config['repository_project'])
 
 
 
@@ -294,7 +294,7 @@ def build(c):
         # Cloning repository
         print_init_banner('Cloning project repository ... ')
         if c.run('test -d {}'.format(repo_folder), warn=True).failed:
-            c.run('git clone ' + config['repository'], echo=True, pty=True)
+            c.run('git clone ' + config['repository_project'], echo=True, pty=True)
         else:
             logger.info('Repository exists skipping')
         print_end_banner()
@@ -309,8 +309,8 @@ def build(c):
             #if  config['branch'] is not None:
             if False:
                 c.run('git fetch --all ', echo=True, pty=True)
-                c.run('git checkout ' + config['branch'], echo=True, pty=True)
-                c.run('git pull origin ' +  config['branch'], echo=True, pty=True)
+                c.run('git checkout ' + config['branch_project'], echo=True, pty=True)
+                c.run('git pull origin ' +  config['branch_project'], echo=True, pty=True)
             else:
                 c.run('git pull origin master', echo=True, pty=True)
 
@@ -344,7 +344,7 @@ def build(c):
             "-Dhttps.nonProxyHosts=nexus.nespresso.com build"
     workdir="/root/workspace/" + repo_folder + "/"
 
-    repo_ci_folder = get_repo_folder(config['repository_android_ci'])
+    repo_ci_folder = get_repo_folder(config['repository'])
     with c.cd(config['remote_workspace']):
    
         # Generate docker image
@@ -363,7 +363,7 @@ def launch(c):
     print_end_banner()
 
     # Get repo folder from URL
-    repo_folder = get_repo_folder(config['repository_android_ci'])
+    repo_folder = get_repo_folder(config['repository'])
 
     print_init_banner('Docker image ... ')
     with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
@@ -381,7 +381,7 @@ def halt(c):
     print_end_banner()
 
     # Get repo folder from URL
-    repo_folder = get_repo_folder(config['repository_android_ci'])
+    repo_folder = get_repo_folder(config['repository'])
 
     with c.cd(config['remote_workspace'] + '/' + repo_folder + '/docker'):
         c.run('sudo docker-compose stop jenkins', echo=True)
