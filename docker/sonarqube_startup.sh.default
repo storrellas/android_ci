@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Change permissions
+chown sonarqube:sonarqube -R /opt/sonarqube/data/
+chown sonarqube:sonarqube -R /opt/sonarqube/conf/
+chown sonarqube:sonarqube -R /opt/sonarqube/extensions/
+chown sonarqube:sonarqube -R /opt/sonarqube/logs/
+
+# List
+cd /opt/sonarqube
+su - sonarqube -c whoami
+java --version
+su - sonarqube -c java --version
+su - sonarqube -c ./bin/run.sh
+echo $PATH
+su - sonarqube -c echo $PATH
+su - sonarqube -c pwd
+#./bin/run.sh
