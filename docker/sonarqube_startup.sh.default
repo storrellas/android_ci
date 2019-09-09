@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Change ownership of shares
+sudo chown sonarqube:sonarqube /opt/sonarqube/conf
+sudo chown sonarqube:sonarqube /opt/sonarqube/data
+sudo chown sonarqube:sonarqube /opt/sonarqube/extensions
+
+# Launch Sonarqube
+./bin/run.sh
