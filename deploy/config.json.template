@@ -9,5 +9,7 @@
    "git_key_remote": "/home/storrellas/.ssh/id_rsa",
    "target_path": "/home/sergi/workspace",
    "http_proxy": "http://barc.proxy.corp.sopra:8080",
-   "appcenter_token" : ""
+   "appcenter_token" : "",
+   "jenkins_domain": "jenkins.sopradigitalfactory.com",
+   "sonar_domain": "sonar.sopradigitalfactory.com"
 }

@@ -1,0 +1,25 @@
+server {
+  listen 80;
+  listen [::]:80;
+  server_name {{jenkins_domain}};
+
+
+  location / {
+    proxy_pass http://localhost:8080/;
+    include proxy_params;
+  }
+
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name {{sonar_domain}};
+
+
+  location / {
+    proxy_pass http://localhost:8081/;
+    include proxy_params;
+  }
+
+}

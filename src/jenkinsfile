@@ -1,30 +1,28 @@
 pipeline {
     agent any 
     environment{
-        PROJECT_LOCATION="${env.JENKINS_HOME_HOST}::${PWD}"
+        PROJECT_LOCATION="${env.JENKINS_HOME_HOST}/workspace/${env.JOB_NAME}"
+        JENKINS_COMMAND="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra  -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com build"
+        APK_PATH="${JENKINS_HOME}/workspace/we_are_nutrition-android/app/build/outputs/apk/production/release/app-production-release.apk"
     }
     stages {
-        stage('Build') { 
+        stage('Clone') { 
             steps {
                 echo 'CloningRepository'
-                git branch: 'develop', credentialsId: 'root', url: 'git@innersource.soprasteria.com:digitalfactory/nestle/we_are_nutrition-android.git'
-                echo "CurrentPath: ${PWD}"
-
-                echo "${env.JENKINS_HOME_HOST}"
-                echo "${env.PWD}"
-                echo "SERGI IN HERE -> ${PROJECT_LOCATION}"
-                sh "printenv | sort"
+                git branch: 'develop', credentialsId: 'innersource', url: 'git@innersource.soprasteria.com:digitalfactory/nestle/we_are_nutrition-android.git'
                 
             }
         }
-        stage('Test') { 
+        stage('Build') { 
             steps {
-                echo 'Hello World'
+                echo "PROJECT_LOCATION -> ${PROJECT_LOCATION}"
+                echo "JENKINS_COMMAND -> ${JENKINS_COMMAND}"
+                sh "sudo docker run -w /root/project -v${PROJECT_LOCATION}:/root/project/ --add-host nexus.nespresso.com:192.168.216.107 android_ci ${JENKINS_COMMAND}"
             }
         }
-        stage('Deploy') { 
-            steps {
-                echo 'Hello World'
+        stage('Distrubute') { 
+            steps {                
+                sh "appcenter distribute release --file ${APK_PATH}  --app sopra.mobile.bcn/69587_wearenutrition_es-android -g Collaborators"
             }
         }
     }

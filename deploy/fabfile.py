@@ -115,6 +115,17 @@ def provision(c):
     c.run('sudo chmod +x /usr/local/bin/docker-compose', echo=True)
     c.run('docker-compose --version', echo=True)
 
+    # Install nginx
+    c.run('sudo apt -y install nginx')
+
+    # Install cerbot
+    c.run('echo export http_proxy={} >> ~/.bashrc'.format(config['http_proxy']))
+    c.run('echo export https_proxy={} >> ~/.bashrc'.format(config['http_proxy']))
+    c.run('sudo -E add-apt-repository universe', echo=True)
+    c.run('sudo -E add-apt-repository ppa:certbot/certbot', echo=True)
+    c.run('sudo apt update', echo=True)
+    c.run('sudo apt install -y certbot', echo=True)
+
     print_end_banner()
 
 @task(hosts=my_hosts)
@@ -153,6 +164,38 @@ def gitSSH(c):
     # Change permissions
     c.run('sudo chmod 600 ./.ssh/id_rsa')
     c.run('sudo chmod 600 ./.ssh/id_rsa.pub')
+    print_end_banner()
+
+@task(hosts=my_hosts)
+def nginx(c):
+    """
+    Generates SSH keys selfsigned, creates NGINX configuration and restart
+    """
+    print_init_banner('NGINX: configures NGINX')
+
+    # Upload keys
+    logger.info("Configure NGINX ...")
+
+    nginx_conf_name = 'nginx_conf'
+    nginx_conf_path = './' + nginx_conf_name
+    c.run('mkdir ' + nginx_conf_name, warn=True)
+    with c.cd(nginx_conf_path):
+        # Create selfsigned certificate
+        # c.run('openssl genrsa -out selfsigned.key 2048')
+        # c.run('openssl req -new -x509 -key selfsigned.key -out selfsigned.cert -days 3650 -subj /CN=www.example.com')
+
+        # Generate configuration
+        c.put('./nginx_conf.template', remote=nginx_conf_path)
+        c.run('sed -i "s/{{jenkins_domain}}/' + config['jenkins_domain'] + '/g" nginx_conf.template', echo=True)
+        c.run('sed -i "s/{{sonar_domain}}/' + config['sonar_domain'] + '/g" nginx_conf.template', echo=True)
+
+        # Set configuration
+        c.run('sudo cp -rv ./nginx_conf.template /etc/nginx/sites-available/digitalfactory_ci', echo=True)
+        c.run('sudo ln -s /etc/nginx/sites-available/digitalfactory_ci /etc/nginx/sites-enabled/digitalfactory_ci', echo=True, warn=True)
+
+
+    logger.info("Restart NGINX ...")
+    c.run('sudo /etc/init.d/nginx restart', echo=True)
     print_end_banner()
 
 @task(hosts=my_hosts)
