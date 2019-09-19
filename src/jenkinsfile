@@ -4,6 +4,9 @@ pipeline {
         PROJECT_LOCATION="${env.JENKINS_HOME_HOST}/workspace/${env.JOB_NAME}"
         JENKINS_COMMAND="./gradlew -Dhttp.proxyHost=barc.proxy.corp.sopra -Dhttp.proxyPort=8080 -Dhttps.proxyHost=barc.proxy.corp.sopra  -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=nexus.nespresso.com -Dhttps.nonProxyHosts=nexus.nespresso.com build"
         APK_PATH="${JENKINS_HOME}/workspace/we_are_nutrition-android/app/build/outputs/apk/production/release/app-production-release.apk"
+        SCANNER_HOME = tool 'SonarQubeScanner'
+        SONAR_PROJECT_KEY = "wan-android"
+        SONAR_PROJECT_LOGIN = "a9d5df85f8cae2cbcc2eb2352d0943cc1f9a31cf"
     }
     stages {
         stage('Clone') { 
@@ -18,6 +21,19 @@ pipeline {
                 echo "PROJECT_LOCATION -> ${PROJECT_LOCATION}"
                 echo "JENKINS_COMMAND -> ${JENKINS_COMMAND}"
                 sh "sudo docker run -w /root/project -v${PROJECT_LOCATION}:/root/project/ --add-host nexus.nespresso.com:192.168.216.107 android_ci ${JENKINS_COMMAND}"
+            }
+        }
+        stage('SonarQube') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "env"
+                    // Please configure plugin to use this alternative
+                    //sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY}"
+                    sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=. -Dsonar.host.url=http://sonar.sopradigitalfactory.com -Dsonar.login=${SONAR_PROJECT_LOGIN}"
+                }
+                timeout(time: 30, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
         stage('Distrubute') { 
