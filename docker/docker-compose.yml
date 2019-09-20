@@ -78,5 +78,27 @@ services:
     # driver: "syslog"
     # options:
     #   tag: "android_ci"
-    
+  nexus_ci:
+    image: nexus_ci
+    tty: true
+    build:
+      context: ..
+      dockerfile: docker/Nexus.Dockerfile
+      args:
+        - HTTP_PROXY=${HTTP_PROXY}
+        - HTTP_PROXY_HOST=${HTTP_PROXY_HOST}
+        - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
+        - APPCENTER_TOKEN=${APPCENTER_TOKEN}
+    working_dir: /opt/sonarqube/
+    command: ./startup.sh
+    volumes:
+      - /home/sergi/workspace/android_ci/docker/sonarqube/conf:/opt/sonarqube/conf
+      - /home/sergi/workspace/android_ci/docker/sonarqube/data:/opt/sonarqube/data
+      # - /home/sergi/workspace/android_ci/docker/sonarqube/extensions:/opt/sonarqube/extensions
+    ports:
+      - $SONARQUBE_PORT:9000
+    #logging:
+    # driver: "syslog"
+    # options:
+    #   tag: "android_ci"    
 
